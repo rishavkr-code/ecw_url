@@ -1,7 +1,9 @@
+import os
 from fastapi import FastAPI
 from config import settings
 from middleware import setup_middleware
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def create_app() -> FastAPI:
     """
