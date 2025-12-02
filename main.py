@@ -1,5 +1,6 @@
 import os
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
 from config import settings
 from middleware import setup_middleware
 
