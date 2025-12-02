@@ -42,6 +42,12 @@ def register_routes(app: FastAPI) -> None:
             "docs": "/docs",
             "health": "/health"
         }
+
+    @app.get("/.well-known/jwks.json", tags=["General"])
+    async def get_jwks():
+        jwks_path = os.path.join(BASE_DIR, "jwks.json")
+        return FileResponse(jwks_path, media_type="application/json")
+
     
     @app.get("/health", tags=["General"])
     async def health_check():
@@ -52,7 +58,7 @@ def register_routes(app: FastAPI) -> None:
             "service": settings.app_name
         }
     
-    @app.get("/info", tags=["General"])
+    @app.get("/info")
     async def system_info():
         """System information endpoint"""
         import platform
@@ -66,68 +72,7 @@ def register_routes(app: FastAPI) -> None:
             "port": settings.port
         }
     
-    # Patient endpoints
-    @app.get("/api/v1/patients", tags=["Patients"])
-    async def get_patients(skip: int = 0, limit: int = 10):
-        """Get list of patients with pagination"""
-        # TODO: Replace with actual database query
-        sample_patients = [
-            {"id": 1, "name": "John Doe", "age": 30, "email": "john@example.com"},
-            {"id": 2, "name": "Jane Smith", "age": 25, "email": "jane@example.com"},
-        ]
-        return {
-            "total": len(sample_patients),
-            "skip": skip,
-            "limit": limit,
-            "patients": sample_patients[skip:skip+limit]
-        }
-    
-    @app.get("/api/v1/patients/{patient_id}", tags=["Patients"])
-    async def get_patient(patient_id: int):
-        """Get a specific patient by ID"""
-        # TODO: Replace with actual database query
-        sample_patient = {
-            "id": patient_id,
-            "name": "John Doe",
-            "age": 30,
-            "email": "john@example.com",
-            "phone": "+1234567890",
-            "address": "123 Main St, City, State"
-        }
-        return sample_patient
-    
-    @app.post("/api/v1/patients", tags=["Patients"], status_code=201)
-    async def create_patient(patient_data: dict):
-        """Create a new patient record"""
-        # TODO: Validate and save to database
-        return {
-            "message": "Patient created successfully",
-            "patient": {
-                "id": 123,  # This would be auto-generated
-                **patient_data
-            }
-        }
-    
-    @app.put("/api/v1/patients/{patient_id}", tags=["Patients"])
-    async def update_patient(patient_id: int, patient_data: dict):
-        """Update an existing patient record"""
-        # TODO: Update in database
-        return {
-            "message": f"Patient {patient_id} updated successfully",
-            "patient": {
-                "id": patient_id,
-                **patient_data
-            }
-        }
-    
-    @app.delete("/api/v1/patients/{patient_id}", tags=["Patients"])
-    async def delete_patient(patient_id: int):
-        """Delete a patient record"""
-        # TODO: Delete from database
-        return {
-            "message": f"Patient {patient_id} deleted successfully"
-        }
-    
+
     # Import and include routers here
     # Example: app.include_router(patient_router, prefix="/api/v1/patients", tags=["patients"])
 
